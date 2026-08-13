@@ -1,0 +1,76 @@
+# ───────────────────────── Dependencies ─────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# ───────────────────────── Env / secrets ────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+# ───────────────────────── Next.js (frontend) ───────────────────
+.next/
+out/
+next-env.d.ts
+.vercel
+
+# ───────────────────────── Backend build ────────────────────────
+dist/
+build/
+*.tsbuildinfo
+
+# ───────────────────────── Prisma ───────────────────────────────
+# Keep schema & migrations; ignore local sqlite / generated client
+prisma/dev.db
+prisma/dev.db-journal
+prisma/*.db
+# Generated Prisma client (regenerated on install/build)
+**/node_modules/.prisma/
+
+# ───────────────────────── Logs ─────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ───────────────────────── Testing / coverage ───────────────────
+coverage/
+.nyc_output/
+
+# ───────────────────────── Caches / tooling ─────────────────────
+.turbo/
+.cache/
+.eslintcache
+.parcel-cache/
+
+# ───────────────────────── OS / editor ──────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# ───────────────────────── Misc ─────────────────────────────────
+*.pem
+tmp/
+temp/

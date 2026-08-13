@@ -1,0 +1,94 @@
+// TapAway — Prisma schema (PostgreSQL)
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile Profile?
+  orders  CardOrder[]
+}
+
+model Profile {
+  id        String  @id @default(cuid())
+  // The public handle: tapaway.in/u/<username>
+  username  String  @unique
+  fullName  String
+  headline  String? // designation
+  company   String?
+  bio       String?
+  avatarUrl String?
+  accent    String  @default("#54b3e6") // profile theme color
+
+  // Primary contact fields (shown as quick-action buttons)
+  phone    String?
+  email    String?
+  whatsapp String?
+  website  String?
+  location String? // Google Maps link or address
+
+  views Int @default(0)
+
+  links Link[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Link {
+  id        String   @id @default(cuid())
+  // "social" links use a known platform key; "custom" links use label + url
+  type      LinkType @default(CUSTOM)
+  platform  String? // linkedin | instagram | facebook | twitter | youtube | payment | ...
+  label     String
+  url       String
+  position  Int      @default(0)
+  active    Boolean  @default(true)
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+enum LinkType {
+  SOCIAL
+  CUSTOM
+}
+
+model CardOrder {
+  id            String      @id @default(cuid())
+  cardType      String // standard | premium | corporate
+  addons        String[] // list of selected add-on keys
+  finish        String? // matte | gloss | metallic
+  status        OrderStatus @default(PENDING)
+  shippingName  String?
+  shippingAddr  String?
+  totalPaise    Int         @default(0) // amount in paise (INR)
+  createdAt     DateTime    @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  IN_PRODUCTION
+  SHIPPED
+  DELIVERED
+}

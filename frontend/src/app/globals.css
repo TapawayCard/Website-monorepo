@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050914;
+  --fg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  scroll-behavior: smooth;
+}
+
+/* Nicer default selection */
+::selection {
+  background: rgba(84, 179, 230, 0.35);
+  color: #fff;
+}
+
+/* Thin, brand-tinted scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(84, 179, 230, 0.35);
+  border-radius: 999px;
+}
+
+@layer components {
+  /* Glassmorphism surfaces — auto-adapt via CSS vars set per theme zone */
+  .glass {
+    background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .glass-strong {
+    background: var(--glass-bg-strong, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.16));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, #54b3e6 0%, #2b7fb8 100%);
+    color: #041019;
+    box-shadow: 0 8px 30px rgba(84, 179, 230, 0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px rgba(84, 179, 230, 0.55);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-semibold transition-all duration-300;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+    color: currentColor;
+    backdrop-filter: blur(12px);
+  }
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    border-color: rgba(84, 179, 230, 0.6);
+  }
+
+  /* Sassy mixed-font emphasis word */
+  .accent-serif {
+    font-family: var(--font-serif), Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .gradient-text {
+    background: linear-gradient(120deg, #54b3e6, #a9dcff, #e7e2c9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Grain/glow helpers */
+.glow-blue {
+  box-shadow: 0 0 80px rgba(84, 179, 230, 0.35);
+}
+
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass tint sets, swapped by the scroll theme engine */
+[data-light="false"] {
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.14);
+}
+[data-light="true"] {
+  --glass-bg: rgba(10, 23, 48, 0.04);
+  --glass-bg-strong: rgba(10, 23, 48, 0.06);
+  --glass-border: rgba(10, 23, 48, 0.12);
+}
+
+/* Muted text that follows the current theme colour */
+.text-muted {
+  color: currentColor;
+  opacity: 0.66;
+}
+.text-faint {
+  color: currentColor;
+  opacity: 0.48;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
