@@ -16,7 +16,9 @@ contactRouter.post("/", async (req, res) => {
   const safePhone = escapeHtml(phone || "-");
   const safeMessage = escapeHtml(message).replace(/\n/g, "<br/>");
 
-  await sendMail({
+  // Fire off the email without blocking the response - a slow/unreachable
+  // SMTP server should never hang the contact form for the visitor.
+  void sendMail({
     to: notifyEmail(),
     subject: `New contact enquiry from ${name}`,
     html: `
@@ -28,7 +30,7 @@ contactRouter.post("/", async (req, res) => {
         <p><strong>Message</strong></p>
         <p>${safeMessage}</p>
       </div>`,
-  });
+  }).catch((e) => console.error("[contact email]", e));
 
   return res.json({ ok: true });
 });
