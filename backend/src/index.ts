@@ -5,10 +5,12 @@ import { authRouter } from "./routes/auth";
 import { meRouter } from "./routes/me";
 import { profilesRouter } from "./routes/profiles";
 import { contactRouter } from "./routes/contact";
+import { ordersRouter } from "./routes/orders";
 
 const app = express();
 
-app.use(express.json({ limit: "1mb" }));
+// Generous limit so base64 profile photos (compressed client-side) fit.
+app.use(express.json({ limit: "3mb" }));
 
 // CORS — only needed if you call the API directly from a browser.
 // The Next.js frontend proxies server-side, so this is optional but handy.
@@ -31,6 +33,7 @@ app.use("/auth", authRouter);
 app.use("/me", meRouter);
 app.use("/profiles", profilesRouter);
 app.use("/contact", contactRouter);
+app.use("/orders", ordersRouter);
 
 // 404
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));

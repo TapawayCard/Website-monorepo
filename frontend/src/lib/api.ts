@@ -1,5 +1,5 @@
 // Server-side helper for talking to the TapAway backend API.
-// The browser never calls the backend directly — Next.js route handlers and
+// The browser never calls the backend directly - Next.js route handlers and
 // server components use these helpers, so auth cookies stay same-origin.
 
 export function backendBase() {

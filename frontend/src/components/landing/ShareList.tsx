@@ -15,9 +15,7 @@ export default function ShareList() {
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
-                What can you share?
-              </p>
+              <p className="eyebrow">What can you share?</p>
               <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
                 Your card stays the same.{" "}
                 <span className="accent-serif">Your info</span> evolves.

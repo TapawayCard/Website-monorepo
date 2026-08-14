@@ -14,7 +14,7 @@ export default function Footer() {
                 Smart, sustainable, NFC-powered digital visiting cards.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/signup" className="btn-primary !px-5 !py-2.5 !text-sm">
+                <Link href="/product" className="btn-primary !px-5 !py-2.5 !text-sm">
                   Get Your Card
                 </Link>
                 <Link href="/login" className="btn-ghost !px-5 !py-2.5 !text-sm !text-white">
@@ -41,15 +41,23 @@ export default function Footer() {
               </h4>
               <ul className="mt-4 space-y-2 text-sm text-white/75">
                 <li><a href="mailto:support@tapaway.in" className="hover:text-white">support@tapaway.in</a></li>
-                <li>WhatsApp: +91 XXXXX XXXXX</li>
-                <li>Mon – Sat · 10AM – 7PM</li>
+                <li>
+                  <a href="https://wa.me/919820117283" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                    WhatsApp: +91 98201 17283
+                  </a>
+                </li>
+                <li>Mon to Sat · 10AM to 7PM</li>
               </ul>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row">
             <p>© {new Date().getFullYear()} TapAway. All rights reserved.</p>
-            <p>Made for a smarter, greener way to network.</p>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link href="/terms" className="hover:text-white">Terms &amp; Conditions</Link>
+              <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
+              <Link href="/product" className="hover:text-white">Shop</Link>
+            </div>
           </div>
         </div>
       </div>

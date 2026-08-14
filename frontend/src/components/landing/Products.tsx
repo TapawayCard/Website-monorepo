@@ -2,36 +2,20 @@
 
 import { Reveal } from "./Reveal";
 import TapCard from "@/components/ui/TapCard";
+import { CARDS, rupees } from "@/lib/catalog";
 
-const products = [
-  {
-    variant: "standard" as const,
-    name: "Personal",
-    who: "Freelancers, students, creators, consultants & professionals.",
-    tag: "Most popular",
-  },
-  {
-    variant: "premium" as const,
-    name: "Business",
-    who: "Employees and corporate teams who network as one brand.",
-    tag: "For teams",
-  },
-  {
-    variant: "black" as const,
-    name: "Premium",
-    who: "Luxury cards for founders, executives & premium professionals.",
-    tag: "Luxury",
-  },
-];
+const tags: Record<string, string> = {
+  classic: "Most popular",
+  business: "For professionals",
+  custom: "Luxury",
+};
 
 export default function Products() {
   return (
     <section id="cards" className="relative px-6 py-28">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
-            Product range
-          </p>
+          <p className="eyebrow">Product range</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
             A card for{" "}
             <span className="accent-serif">every</span> kind of professional.
@@ -39,24 +23,25 @@ export default function Products() {
         </Reveal>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {products.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.08}>
+          {CARDS.map((c, i) => (
+            <Reveal key={c.key} delay={i * 0.08}>
               <div className="glass group h-full overflow-hidden rounded-3xl p-6 transition-transform duration-300 hover:-translate-y-1.5">
                 <div className="mb-6 [perspective:1000px]">
                   <div className="transition-transform duration-500 group-hover:[transform:rotateY(-10deg)_rotateX(4deg)]">
-                    <TapCard variant={p.variant} />
+                    <TapCard variant={c.variant} />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-semibold">{p.name}</h3>
+                  <h3 className="text-2xl font-semibold">{c.name}</h3>
                   <span
-                    className="rounded-full px-3 py-1 text-xs font-medium"
-                    style={{ background: "rgba(84,179,230,0.16)", color: "#54b3e6" }}
+                    className="rounded-full px-3 py-1 text-xs font-medium text-accent"
+                    style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
                   >
-                    {p.tag}
+                    {tags[c.key]}
                   </span>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{p.who}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{c.tagline}</p>
+                <p className="mt-4 text-lg font-bold text-brand-sky">{rupees(c.pricePaise)}</p>
               </div>
             </Reveal>
           ))}

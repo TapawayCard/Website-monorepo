@@ -10,19 +10,23 @@ const config: Config = {
       colors: {
         // TapAway brand
         navy: {
-          950: "#050914",
-          900: "#0a1024",
-          800: "#101a3a",
-          700: "#17264f",
-          600: "#1f3468",
+          950: "#0a1122",
+          900: "#0d1526",
+          800: "#12203f",
+          700: "#183056",
+          600: "#20406e",
+        },
+        paper: {
+          DEFAULT: "#f4f1e8",
+          soft: "#efe9db",
         },
         brand: {
           // cream ring accent from the logo
           cream: "#e7e2c9",
           sand: "#d9d2ad",
           // NFC signal blue
-          blue: "#2b7fb8",
-          sky: "#54b3e6",
+          blue: "#1e7bb4",
+          sky: "#58b2e6",
           ice: "#a9dcff",
         },
       },

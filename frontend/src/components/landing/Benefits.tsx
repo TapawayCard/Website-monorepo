@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/icons";
 
 const benefits = [
-  { icon: NfcWave, title: "NFC Technology", desc: "Tap your card to any modern phone and your profile opens instantly — no app required." },
+  { icon: NfcWave, title: "NFC Technology", desc: "Tap your card to any modern phone and your profile opens instantly, no app required." },
   { icon: Leaf, title: "Paperless & Eco-Friendly", desc: "One card for years. Skip the stacks of paper cards that get lost or thrown away." },
   { icon: Refresh, title: "Real-Time Updates", desc: "Change a job, number or link anytime. Your card stays the same, your info evolves." },
   { icon: IdCard, title: "Professional Identity", desc: "A polished digital profile that makes a memorable first impression, every time." },
@@ -25,16 +25,14 @@ export default function Benefits() {
     <section id="why" className="relative px-6 py-28">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
-            Why TapAway
-          </p>
+          <p className="eyebrow">Why TapAway</p>
           <h2 className="mt-3 max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
             Paper cards get lost.{" "}
             <span className="accent-serif">Yours</span> never goes out of date.
           </h2>
           <p className="mt-5 max-w-2xl text-lg text-muted">
             Traditional business cards are often lost, thrown away, or become
-            outdated. TapAway is a smarter way to connect — with a single tap
+            outdated. TapAway is a smarter way to connect. With a single tap,
             your clients and connections access your live digital profile.
           </p>
         </Reveal>
@@ -44,8 +42,8 @@ export default function Benefits() {
             <Reveal key={b.title} delay={i * 0.05}>
               <div className="glass group h-full rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
                 <div
-                  className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl"
-                  style={{ background: "rgba(84,179,230,0.16)", color: "#54b3e6" }}
+                  className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent"
+                  style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
                 >
                   <b.icon className="h-6 w-6" />
                 </div>
@@ -66,7 +64,7 @@ export default function Benefits() {
                 <Bolt className="h-6 w-6" />
               </div>
               <p className="text-lg font-medium">
-                Instant sharing, zero friction — your whole identity in one tap.
+                Instant sharing, zero friction. Your whole identity in one tap.
               </p>
             </div>
             <a href="#cards" className="btn-ghost !py-2.5 !text-sm">

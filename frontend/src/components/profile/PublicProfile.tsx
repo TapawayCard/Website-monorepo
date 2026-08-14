@@ -50,21 +50,96 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+// Escape a vCard text value per RFC 2426 (backslash, comma, semicolon, newline).
+function esc(v: string) {
+  return v
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;");
+}
+
+// Fold long lines at 75 octets with a leading space on continuations (RFC 2426).
+function fold(line: string) {
+  if (line.length <= 75) return line;
+  const out: string[] = [line.slice(0, 75)];
+  let i = 75;
+  while (i < line.length) {
+    out.push(" " + line.slice(i, i + 74));
+    i += 74;
+  }
+  return out.join("\r\n");
+}
+
+// Map a link platform to an Apple X-SOCIALPROFILE service type when known.
+const SOCIAL_SERVICE: Record<string, string> = {
+  linkedin: "linkedin",
+  instagram: "instagram",
+  facebook: "facebook",
+  twitter: "twitter",
+  x: "twitter",
+  youtube: "youtube",
+};
+
 function buildVCard(p: PublicProfileData, profileUrl: string) {
-  const lines = [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `FN:${p.fullName}`,
-    p.company ? `ORG:${p.company}` : "",
-    p.headline ? `TITLE:${p.headline}` : "",
-    p.phone ? `TEL;TYPE=CELL:${p.phone}` : "",
-    p.email ? `EMAIL:${p.email}` : "",
-    p.website ? `URL:${p.website}` : "",
-    `URL:${profileUrl}`,
-    p.bio ? `NOTE:${p.bio.replace(/\n/g, " ")}` : "",
-    "END:VCARD",
-  ].filter(Boolean);
-  return lines.join("\n");
+  const nameParts = p.fullName.trim().split(/\s+/);
+  const given = nameParts.shift() || "";
+  const family = nameParts.join(" ");
+
+  const lines: string[] = ["BEGIN:VCARD", "VERSION:3.0"];
+
+  // Structured + formatted name (both required for correct mapping).
+  lines.push(`N:${esc(family)};${esc(given)};;;`);
+  lines.push(`FN:${esc(p.fullName)}`);
+
+  if (p.company) lines.push(`ORG:${esc(p.company)}`);
+  if (p.headline) lines.push(`TITLE:${esc(p.headline)}`);
+  if (p.phone) lines.push(`TEL;TYPE=CELL,VOICE:${esc(p.phone)}`);
+  if (p.email) lines.push(`EMAIL;TYPE=INTERNET,PREF:${esc(p.email)}`);
+  if (p.website) lines.push(`URL;TYPE=WORK:${esc(p.website)}`);
+
+  // Grouped, labelled links so socials/custom links show up with names.
+  let item = 0;
+  const addLabelledUrl = (label: string, url: string) => {
+    item += 1;
+    const g = `item${item}`;
+    lines.push(`${g}.URL:${esc(url)}`);
+    lines.push(`${g}.X-ABLabel:${esc(label)}`);
+  };
+
+  if (p.whatsapp) {
+    addLabelledUrl("WhatsApp", `https://wa.me/${p.whatsapp.replace(/\D/g, "")}`);
+  }
+
+  for (const l of p.links) {
+    if (!l.url) continue;
+    const service = l.platform ? SOCIAL_SERVICE[l.platform] : undefined;
+    if (service) {
+      lines.push(`X-SOCIALPROFILE;TYPE=${service}:${esc(l.url)}`);
+    }
+    addLabelledUrl(l.label || l.url, l.url);
+  }
+
+  if (p.location) {
+    if (/^https?:\/\//i.test(p.location)) addLabelledUrl("Location", p.location);
+    else lines.push(`ADR;TYPE=WORK:;;${esc(p.location)};;;;`);
+  }
+
+  addLabelledUrl("TapAway Profile", profileUrl);
+
+  if (p.bio) lines.push(`NOTE:${esc(p.bio)}`);
+
+  // Embed the profile photo when it is an inline JPEG data URL.
+  if (p.avatarUrl && p.avatarUrl.startsWith("data:image/")) {
+    const comma = p.avatarUrl.indexOf(",");
+    const b64 = comma >= 0 ? p.avatarUrl.slice(comma + 1) : "";
+    if (b64) lines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${b64}`);
+  }
+
+  lines.push("END:VCARD");
+
+  // vCard requires CRLF line endings; fold each line first.
+  return lines.map(fold).join("\r\n") + "\r\n";
 }
 
 export default function PublicProfile({
@@ -100,7 +175,7 @@ export default function PublicProfile({
 
   function saveContact() {
     const vcard = buildVCard(profile, profileUrl);
-    const blob = new Blob([vcard], { type: "text/vcard" });
+    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

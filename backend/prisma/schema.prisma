@@ -15,6 +15,7 @@ model User {
   email        String   @unique
   phone        String?
   passwordHash String
+  privacyAcceptedAt DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -71,18 +72,39 @@ enum LinkType {
 }
 
 model CardOrder {
-  id            String      @id @default(cuid())
-  cardType      String // standard | premium | corporate
-  addons        String[] // list of selected add-on keys
-  finish        String? // matte | gloss | metallic
-  status        OrderStatus @default(PENDING)
-  shippingName  String?
-  shippingAddr  String?
-  totalPaise    Int         @default(0) // amount in paise (INR)
-  createdAt     DateTime    @default(now())
+  id       String      @id @default(cuid())
+  status   OrderStatus @default(PENDING)
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Cart snapshot (array of configured items) + computed amount.
+  items       Json
+  amountPaise Int
+  currency    String @default("INR")
+
+  // Buyer details (guest checkout supported, so userId is optional).
+  buyerName  String
+  buyerEmail String
+  buyerPhone String
+
+  // Shipping address
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+  country      String @default("India")
+
+  privacyConsent Boolean @default(false)
+
+  // Manual UPI payment: buyer uploads a screenshot as proof, our team
+  // verifies it against the UPI app before marking the order PAID.
+  paymentProofData        String?   @db.Text
+  paymentProofSubmittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 enum OrderStatus {

@@ -43,9 +43,7 @@ export default function Contact() {
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-sky">
-              Contact us
-            </p>
+            <p className="eyebrow">Contact us</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
               Have{" "}
               <span className="accent-serif">questions?</span>
@@ -59,14 +57,19 @@ export default function Contact() {
                 <Mail className="h-5 w-5 text-brand-sky" />
                 support@tapaway.in
               </a>
-              <div className="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-sm">
+              <a
+                href="https://wa.me/919820117283"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-sm"
+              >
                 <Whatsapp className="h-5 w-5 text-brand-sky" />
-                WhatsApp: +91 XXXXX XXXXX
-              </div>
-              <div className="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-sm">
+                WhatsApp: +91 98201 17283
+              </a>
+              <a href="tel:+919820117283" className="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-sm">
                 <Phone className="h-5 w-5 text-brand-sky" />
-                Mon – Sat · 10:00 AM – 7:00 PM
-              </div>
+                +91 98201 17283 · Mon to Sat · 10:00 AM to 7:00 PM
+              </a>
             </div>
           </div>
         </Reveal>

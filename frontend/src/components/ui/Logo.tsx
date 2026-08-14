@@ -1,34 +1,28 @@
-import { NfcWave } from "./icons";
+/* eslint-disable @next/next/no-img-element */
 
-/** Inline TapAway logo — adapts to the current theme colour. */
+/**
+ * TapAway brand logo - the official badge (transparent PNG in /public/logo.png).
+ * Sits cleanly on both dark and light sections.
+ * `className` controls sizing/spacing; height defaults to 40px.
+ */
 export default function Logo({
   className = "",
-  showText = true,
+  height = 40,
 }: {
   className?: string;
+  height?: number;
+  /** kept for backwards-compat; the full lockup already includes the wordmark */
   showText?: boolean;
 }) {
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      <span
-        className="relative flex h-8 w-8 items-center justify-center rounded-full"
-        style={{ border: "1.5px solid rgba(231,226,201,0.9)" }}
-      >
-        <span
-          className="flex h-5 w-5 items-center justify-center rounded-full"
-          style={{ background: "radial-gradient(circle at 35% 30%,#54b3e6,#1f6fa5 75%)" }}
-        >
-          <NfcWave className="h-3.5 w-3.5 text-white" />
-        </span>
-      </span>
-      {showText && (
-        <span
-          className="text-2xl leading-none"
-          style={{ fontFamily: "var(--font-serif), Georgia, serif", fontStyle: "italic", fontWeight: 600 }}
-        >
-          tapaway
-        </span>
-      )}
-    </span>
+    <img
+      src="/logo.png"
+      alt="TapAway"
+      width={Math.round((height * 470) / 361)}
+      height={height}
+      className={`inline-block w-auto select-none ${className}`}
+      style={{ height }}
+      draggable={false}
+    />
   );
 }

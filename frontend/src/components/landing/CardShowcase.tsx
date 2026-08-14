@@ -7,7 +7,7 @@ import { NfcWave, Refresh, QrIcon, IdCard, LinkIcon, Leaf } from "@/components/u
 
 const features = [
   { icon: NfcWave, title: "One-tap sharing", desc: "Programmed NFC chip opens your profile instantly.", side: "left", at: 0.12 },
-  { icon: Refresh, title: "Always up to date", desc: "Edit once — every card you've ever shared updates.", side: "right", at: 0.3 },
+  { icon: Refresh, title: "Always up to date", desc: "Edit once, and every card you've ever shared updates.", side: "right", at: 0.3 },
   { icon: LinkIcon, title: "All your links", desc: "Socials, portfolio, payments and custom links in one place.", side: "left", at: 0.48 },
   { icon: QrIcon, title: "QR backup", desc: "A scannable code for phones without NFC.", side: "right", at: 0.62 },
   { icon: IdCard, title: "vCard save", desc: "Contacts save your details straight to their phone.", side: "left", at: 0.78 },
@@ -39,8 +39,8 @@ function FeatureCard({
       }`}
     >
       <div
-        className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl"
-        style={{ background: "rgba(84,179,230,0.16)", color: "#54b3e6" }}
+        className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl text-accent"
+        style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
       >
         <feature.icon className="h-5 w-5" />
       </div>
@@ -76,7 +76,7 @@ export default function CardShowcase() {
             One card.{" "}
             <span className="accent-serif gradient-text">Everything</span> you are.
           </h2>
-          <p className="mt-3 text-muted">Keep scrolling — watch it come to life.</p>
+          <p className="mt-3 text-muted">Keep scrolling to watch it come to life.</p>
         </div>
 
         {/* rotating card */}

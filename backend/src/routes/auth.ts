@@ -26,6 +26,7 @@ authRouter.post("/signup", async (req, res) => {
       email,
       phone: phone || null,
       passwordHash,
+      privacyAcceptedAt: new Date(),
       profile: { create: { username, fullName, email, phone: phone || null } },
     },
   });

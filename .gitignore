@@ -70,7 +70,11 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 
+# ───────────────────────── AI tooling ────────────────────────────
+.claude/
+
 # ───────────────────────── Misc ─────────────────────────────────
 *.pem
 tmp/
 temp/
+*.zip

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/ui/Logo";
+import ImageCropper from "@/components/dashboard/ImageCropper";
 import PublicProfile, {
   type PublicProfileData,
 } from "@/components/profile/PublicProfile";
@@ -40,6 +41,16 @@ const field =
   "w-full rounded-xl border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand-sky";
 const labelCls = "mb-1.5 block text-xs font-medium text-white/55";
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 function Section({ title, children, desc }: { title: string; desc?: string; children: React.ReactNode }) {
   return (
     <div className="glass-strong rounded-2xl p-5">
@@ -63,6 +74,30 @@ export default function Editor({
   const [s, setS] = useState<State>(initial);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [photoErr, setPhotoErr] = useState("");
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+
+  function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    setPhotoErr("");
+    if (!file.type.startsWith("image/")) {
+      setPhotoErr("Please choose an image file (JPG, PNG or WebP).");
+      return;
+    }
+    if (file.size > 12 * 1024 * 1024) {
+      setPhotoErr("That image is too large. Please pick one under 12MB.");
+      return;
+    }
+    setCropSrc(URL.createObjectURL(file));
+  }
+
+  function closeCropper() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+  }
 
   const host = siteUrl.replace(/^https?:\/\//, "");
   const profileUrl = `${siteUrl}/u/${s.username}`;
@@ -237,6 +272,58 @@ export default function Editor({
           </div>
 
           <Section title="Profile" desc="This is what people see when they tap your card.">
+            {/* photo upload */}
+            <div>
+              <label className={labelCls}>Profile photo</label>
+              <div className="flex items-center gap-4">
+                <div
+                  className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/12 bg-white/5"
+                  aria-hidden
+                >
+                  {s.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={s.avatarUrl} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-white/60">
+                      {initials(s.fullName) || "TA"}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="rounded-full border border-white/15 px-4 py-2 text-sm font-medium text-white/85 hover:text-white"
+                  >
+                    {s.avatarUrl ? "Change photo" : "Upload photo"}
+                  </button>
+                  {s.avatarUrl && (
+                    <button
+                      type="button"
+                      onClick={() => set("avatarUrl", "")}
+                      className="rounded-full px-3 py-2 text-sm text-white/55 hover:text-red-300"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={onPickPhoto}
+                />
+              </div>
+              {photoErr ? (
+                <p className="mt-1.5 text-xs text-red-400">{photoErr}</p>
+              ) : (
+                <p className="mt-1.5 text-xs text-white/40">
+                  JPG, PNG or WebP. You can crop it to a square next.
+                </p>
+              )}
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelCls}>Full name</label>
@@ -246,13 +333,9 @@ export default function Editor({
                 <label className={labelCls}>Designation / headline</label>
                 <input className={field} value={s.headline} onChange={(e) => set("headline", e.target.value)} placeholder="Product Designer" />
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <label className={labelCls}>Company</label>
                 <input className={field} value={s.company} onChange={(e) => set("company", e.target.value)} />
-              </div>
-              <div>
-                <label className={labelCls}>Profile photo URL</label>
-                <input className={field} value={s.avatarUrl} onChange={(e) => set("avatarUrl", e.target.value)} placeholder="https://…" />
               </div>
             </div>
             <div>
@@ -358,6 +441,17 @@ export default function Editor({
           </div>
         </div>
       </div>
+
+      {cropSrc && (
+        <ImageCropper
+          src={cropSrc}
+          onCancel={closeCropper}
+          onApply={(dataUrl) => {
+            set("avatarUrl", dataUrl);
+            closeCropper();
+          }}
+        />
+      )}
     </div>
   );
 }

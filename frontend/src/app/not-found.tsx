@@ -11,7 +11,7 @@ export default function NotFound() {
           4<span className="accent-serif gradient-text">0</span>4
         </h1>
         <p className="mt-4 text-white/60">
-          This profile or page doesn't exist — it may have been moved or the
+          This profile or page doesn't exist. It may have been moved, or the
           username is wrong.
         </p>
         <Link href="/" className="btn-primary mt-8">

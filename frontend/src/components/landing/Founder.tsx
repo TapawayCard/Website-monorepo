@@ -9,9 +9,7 @@ export default function Founder() {
         <Reveal>
           <div className="glass-strong relative overflow-hidden rounded-[2rem] p-10 text-center sm:p-14">
             <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand-sky/20 blur-3xl" />
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
-              Meet the founder
-            </p>
+            <p className="eyebrow">Meet the founder</p>
             <blockquote className="mx-auto mt-6 max-w-2xl text-2xl font-medium leading-snug sm:text-3xl">
               TapAway was created with a vision to eliminate paper business cards
               and bring networking into the{" "}

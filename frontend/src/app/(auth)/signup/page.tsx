@@ -16,9 +16,14 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
+  const [agree, setAgree] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!agree) {
+      setError("Please accept the Privacy Policy and Terms to continue.");
+      return;
+    }
     setLoading(true);
     setError("");
     const form = new FormData(e.currentTarget);
@@ -32,6 +37,7 @@ export default function SignupPage() {
           phone: form.get("phone"),
           username: form.get("username"),
           password: form.get("password"),
+          privacyConsent: agree,
         }),
       });
       const data = await res.json();
@@ -95,6 +101,21 @@ export default function SignupPage() {
           <label className="mb-1.5 block text-xs font-medium text-white/60">Password</label>
           <input name="password" type="password" required minLength={8} className={field} placeholder="At least 8 characters" />
         </div>
+
+        <label className="flex items-start gap-2.5 text-xs text-white/60">
+          <input
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="mt-0.5"
+          />
+          <span>
+            I agree to the{" "}
+            <Link href="/privacy" className="text-brand-sky hover:underline">Privacy Policy</Link>{" "}
+            and{" "}
+            <Link href="/terms" className="text-brand-sky hover:underline">Terms &amp; Conditions</Link>.
+          </span>
+        </label>
 
         {error && <p className="text-sm text-red-400">{error}</p>}
 
