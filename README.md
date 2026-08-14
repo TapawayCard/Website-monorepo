@@ -84,9 +84,8 @@ The frontend's matching proxy routes live in `frontend/src/app/api/*`.
 
 1. **New Project → Provision PostgreSQL.**
 2. **New → Deploy from GitHub repo**, and set the service's **Root Directory** to `backend`.
-3. Add env vars: `DATABASE_URL` (reference the Postgres plugin), `AUTH_SECRET`, `CORS_ORIGIN=https://your-frontend-domain`. `PORT` is provided by Railway.
-4. Railway builds with `npm run build` and starts with `prisma migrate deploy && npm run start` (see `backend/railway.json`).
-5. First deploy: run `npx prisma db push` (or add a migration) against the production DB.
+3. Add env vars: `DATABASE_URL` (reference the Postgres plugin), `AUTH_SECRET`, `CORS_ORIGIN=https://your-frontend-domain`, plus the SMTP vars for order/contact emails (see `backend/.env.example`). `PORT` is provided by Railway.
+4. Railway builds with `npm run build` and starts with `prisma migrate deploy && npm run start` (see `backend/railway.json`) — this applies `prisma/migrations` automatically on every deploy, so no manual DB step is needed.
 
 ### Frontend → Vercel
 
