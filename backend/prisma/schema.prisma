@@ -19,6 +19,11 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Forgot-password flow: a hash of the emailed token (never store it raw)
+  // plus its expiry. Cleared once used or a new one is requested.
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
+
   profile Profile?
   orders  CardOrder[]
 }

@@ -46,7 +46,12 @@ function LoginForm() {
         <input name="email" type="email" required className={field} placeholder="you@example.com" />
       </div>
       <div>
-        <label className="mb-1.5 block text-xs font-medium text-white/60">Password</label>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label className="block text-xs font-medium text-white/60">Password</label>
+          <Link href="/forgot-password" className="text-xs font-medium text-brand-sky hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         <input name="password" type="password" required className={field} placeholder="••••••••" />
       </div>
 
@@ -55,10 +60,6 @@ function LoginForm() {
       <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
         {loading ? "Signing in…" : "Log in"}
       </button>
-
-      <p className="rounded-xl bg-white/5 px-3 py-2 text-center text-xs text-white/40">
-        Demo login · demo@tapaway.in / demo1234
-      </p>
     </form>
   );
 }
