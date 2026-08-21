@@ -1,32 +1,16 @@
-import nodemailer from "nodemailer";
-
 /*
-  Minimal email helper. If SMTP is not configured, emails are logged instead
-  of sent, so the app keeps working end-to-end during development.
+  Minimal email helper backed by the Resend HTTP API. Raw SMTP to Gmail was
+  dropped/timing out from Railway's network (cloud IP ranges routinely get
+  silently blocked by Google), so mail goes over HTTPS instead - which isn't
+  blockable the same way and is what transactional mail providers are for.
+
+  If RESEND_API_KEY is not configured, emails are logged instead of sent, so
+  the app keeps working end-to-end during development.
 
   Configure in the backend environment:
-    SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_FROM, TAPAWAY_NOTIFY_EMAIL
+    RESEND_API_KEY, MAIL_FROM (must be on a domain verified in Resend),
+    TAPAWAY_NOTIFY_EMAIL
 */
-
-let transporter: nodemailer.Transporter | null = null;
-
-function getTransporter() {
-  if (transporter) return transporter;
-  if (!process.env.SMTP_HOST) return null;
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: Number(process.env.SMTP_PORT) === 465,
-    auth: process.env.SMTP_USER
-      ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-      : undefined,
-    // Fail fast instead of hanging the request if the SMTP connection stalls.
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 10_000,
-  });
-  return transporter;
-}
 
 export type MailAttachment = {
   filename: string;
@@ -40,20 +24,30 @@ export async function sendMail(opts: {
   html: string;
   attachments?: MailAttachment[];
 }) {
-  const t = getTransporter();
-  const from = process.env.MAIL_FROM || "TapAway <no-reply@tapaway.in>";
-  if (!t) {
-    console.log(`[mail:skipped] to=${opts.to} subject="${opts.subject}" (SMTP not configured)`);
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.MAIL_FROM || "TapAway <no-reply@tapawaycard.com>";
+  if (!apiKey) {
+    console.log(`[mail:skipped] to=${opts.to} subject="${opts.subject}" (RESEND_API_KEY not configured)`);
     return;
   }
   try {
-    await t.sendMail({
-      from,
-      to: opts.to,
-      subject: opts.subject,
-      html: opts.html,
-      attachments: opts.attachments,
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: [opts.to],
+        subject: opts.subject,
+        html: opts.html,
+        attachments: opts.attachments?.map((a) => ({ filename: a.filename, content: a.content })),
+      }),
     });
+    if (!res.ok) {
+      console.error("[mail:error]", res.status, await res.text());
+    }
   } catch (e) {
     console.error("[mail:error]", e);
   }
